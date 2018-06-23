@@ -32,6 +32,14 @@ instance FromJSON Artist where
           <*> o .: "type"
           <*> o .: "uri"
 
+data Artists = Artists {
+  artists :: [Artist]
+} deriving (Show)
+
+instance FromJSON Artists where
+  parseJSON = withObject "artists" $ \o ->
+    Artists <$> o .: "artists"
+
 data ExternalURL = ExternalURL {
   spotify :: String
 } deriving (Show)
