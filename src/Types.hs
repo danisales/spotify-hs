@@ -5,9 +5,10 @@ module Types where
 import Data.Aeson
 import Control.Lens
 import Data.Monoid
+import Data.Map (Map)
 
 data Artist = Artist {
-  artist_external_urls :: ExternalURL,
+  artist_external_urls :: (Map String String),
   artist_followers :: Followers,
   artist_genres :: [String],
   artist_href :: String,
@@ -40,22 +41,6 @@ instance FromJSON Artists where
   parseJSON = withObject "artists" $ \o ->
     Artists <$> o .: "artists"
 
-data ExternalURL = ExternalURL {
-  spotify :: String
-} deriving (Show)
-
-instance FromJSON ExternalURL where
-  parseJSON = withObject "externalurl" $ \o ->
-    ExternalURL <$> o .: "spotify"
-
-data ExternalID = ExternalID {
-  isrc :: String
-} deriving (Show)
-
-instance FromJSON ExternalID where
-  parseJSON = withObject "externalid" $ \o ->
-    ExternalID <$> o .: "isrc"
-
 data Followers = Followers {
   follower_href :: Maybe String,
   follower_total :: Integer
@@ -85,13 +70,13 @@ data Track = Track {
   track_disc_number :: Integer,
   track_duration_ms :: Integer,
   track_explict :: Bool,
-  track_external_ids :: ExternalID,
-  track_external_urls :: ExternalURL,
+  track_external_ids :: (Map String String),
+  track_external_urls :: (Map String String),
   track_href :: String,
   track_id :: String,
   track_is_playable :: Maybe Bool,
   track_linked_from :: Maybe String,
-  track_restriction :: Maybe Restriction,
+  track_restriction :: Maybe (Map String String),
   track_name :: String,
   track_popularity :: Integer,
   track_preview_url :: Maybe String,
@@ -136,12 +121,12 @@ data SimplifiedTracks = SimplifiedTracks {
   s_track_disc_number :: Integer,
   s_track_duration_ms :: Integer,
   s_track_explict :: Bool,
-  s_track_external_urls :: ExternalURL,
+  s_track_external_urls :: (Map String String),
   s_track_href :: String,
   s_track_id :: String,
   s_track_is_playable :: Maybe Bool,
   s_track_linked_from :: Maybe String,
-  s_track_restriction :: Maybe Restriction,
+  s_track_restriction :: Maybe (Map String String),
   s_track_name :: String,
   s_track_preview_url :: Maybe String,
   s_track_number :: Integer,
@@ -167,17 +152,9 @@ instance FromJSON SimplifiedTracks where
           <*> o .: "track_number"
           <*> o .: "type"
           <*> o .: "uri"
-          
-data Restriction = Restriction {
-  reason :: String
-} deriving (Show)
-
-instance FromJSON Restriction where
-  parseJSON = withObject "restriction" $ \o ->
-    Restriction <$> o .: "reason"
 
 data SimplifiedArtist = SimplifiedArtist {
-  s_artist_external_urls :: ExternalURL,
+  s_artist_external_urls :: (Map String String),
   s_artist_href :: String,
   s_artist_id :: String,
   s_artist_name :: String,
@@ -198,19 +175,71 @@ data SimplifiedArtists = SimplifiedArtists {
   s_artists :: [SimplifiedArtist]
 } deriving (Show)
 
+data Album = Album {
+  album_albumtype :: String,
+  album_artists :: [SimplifiedArtist],
+  album_available_markets :: [String],
+  album_copyrights :: [Copyright],
+  album_external_ids :: (Map String String),
+  album_external_urls :: (Map String String),
+  album_genres :: [String],
+  album_href :: String,
+  album_id :: String,
+  album_images :: [Image],
+  album_label :: String,
+  album_name :: String,
+  album_popularity :: Integer,
+  album_release_date :: String,
+  album_release_date_precision :: String,
+  album_tracks :: AlbumTracks,
+  album_type :: String,
+  album_uri :: String
+} deriving (Show)
+
+instance FromJSON Album where
+  parseJSON = withObject "album" $ \o ->
+    Album <$> o .: "album_type"
+          <*> o .: "artists"
+          <*> o .: "available_markets"
+          <*> o .: "copyrights"     
+          <*> o .: "external_ids"
+          <*> o .: "external_urls"
+          <*> o .: "genres"
+          <*> o .: "href"
+          <*> o .: "id"
+          <*> o .: "images"
+          <*> o .: "label"
+          <*> o .: "name"
+          <*> o .: "popularity"
+          <*> o .: "release_date"
+          <*> o .: "release_date_precision"
+          <*> o .: "tracks"
+          <*> o .: "type"
+          <*> o .: "uri"
+
+data Copyright = Copyright {
+  copyright_text :: String,
+  copyright_type :: String
+} deriving (Show)
+
+instance FromJSON Copyright where
+  parseJSON = withObject "copyright" $ \o ->
+    Copyright <$> o .: "text"
+              <*> o .: "type"
+
 data SimplifiedAlbum = SimplifiedAlbum {
   s_album_albumgroup :: Maybe String,
   s_album_albumtype :: String,
   s_album_artists :: [SimplifiedArtist],
   s_album_available_markets :: [String],
-  s_album_external_urls :: ExternalURL,
+  s_album_external_urls :: (Map String String),
   s_album_href :: String,
   s_album_id :: String,
   s_album_images :: [Image],
   s_album_name :: String,
   s_album_release_date :: String,
   s_album_release_date_precision :: String,
-  s_album_restrictions :: Maybe Restriction,
+  s_album_restrictions :: Maybe (Map String String),
   s_album_type :: String,
   s_album_uri :: String
 } deriving (Show)
