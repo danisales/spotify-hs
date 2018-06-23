@@ -37,6 +37,16 @@ getArtists ids = do
   r <- getWith opts (baseUrl <> "/artists?ids=" <> intercalate "," ids)
   return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe Artists)
 
+-- e.g. getArtistAlbums "6yz8H2Aks1bHaKNiHCutaR" "BR"
+getArtistAlbums :: String -> String -> IO (Maybe ArtistAlbums)
+getArtistAlbums id market = do
+  token <- getAccessToken
+  let opts = defaults & param "Accept" .~ ["application/json"]
+                      & param "Content-Type" .~["application/json"]
+                      & header "Authorization" .~ ["Bearer " <> B.pack token]
+  r <- getWith opts (baseUrl <> "/artists/" <> id <> "/albums?limit=50&market=" <> market)
+  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe ArtistAlbums)
+
 -- e.g. getRelatedArtists "6yz8H2Aks1bHaKNiHCutaR"
 getRelatedArtists :: String -> IO (Maybe Artists)
 getRelatedArtists id = do

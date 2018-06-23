@@ -247,3 +247,11 @@ data MultipleAudioFeatures = MultipleAudioFeatures {
 instance FromJSON MultipleAudioFeatures where
   parseJSON = withObject "multaudiofeatures" $ \o ->
     MultipleAudioFeatures <$> o .: "audio_features"
+
+data ArtistAlbums = ArtistAlbums {
+  albums :: [SimplifiedAlbum]
+} deriving (Show)
+
+instance FromJSON ArtistAlbums where
+  parseJSON = withObject "multaudiofeatures" $ \o ->
+    ArtistAlbums <$> o .: "items"
