@@ -371,6 +371,78 @@ instance FromJSON AlbumsNewReleases where
     items <- albums .: "items"
     return $ AlbumsNewReleases(items)
 
+data PlaylistTrack = PlaylistTrack {
+  playlisttrack_added_at :: Maybe String,
+  playlisttrack_added_by :: Maybe SimplifiedUser,
+  playlisttrack_is_local :: Bool,
+  playlisttrack_track :: Track
+} deriving (Show)
+
+instance FromJSON PlaylistTrack where
+  parseJSON = withObject "playlisttrack" $ \o ->
+    PlaylistTrack <$> o .:? "added_at"
+                  <*> o .:? "added_by"
+                  <*> o .: "is_local"
+                 <*> o .: "track"
+
+data SimplifiedUser = SimplifiedUser {
+  s_user_external_urls :: (Map String String),
+  s_user_href :: String,
+  s_user_id :: String,
+  s_user_type :: String,
+  s_user_uri :: String
+} deriving (Show)
+
+instance FromJSON SimplifiedUser where
+  parseJSON = withObject "user" $ \o ->
+    SimplifiedUser <$> o .: "external_urls"
+         <*> o .: "href"
+         <*> o .: "id"
+         <*> o .: "type"
+         <*> o .: "uri"
+
+data Playlist = Playlist {
+  playlist_collaborative :: Bool,
+  playlist_description :: Maybe String,
+  playlist_external_urls :: (Map String String),
+  playlist_followers :: Followers,
+  playlist_href :: String,
+  playlist_id :: String,
+  playlist_images :: Maybe [Image],
+  playlist_name :: String,
+  playlist_owner :: SimplifiedUser,
+  playlist_public :: Maybe Bool,
+  playlist_snapshot_id :: String,
+  playlist_tracks :: PlaylistTracks,
+  playlist_type :: String,
+  playlist_uri :: String
+} deriving (Show)
+
+instance FromJSON Playlist where
+  parseJSON = withObject "user" $ \o ->
+    Playlist <$> o .: "collaborative"
+         <*> o .:? "description"
+         <*> o .: "external_urls"
+         <*> o .: "followers"
+         <*> o .: "href"
+         <*> o .: "id"
+         <*> o .:? "images"
+         <*> o .: "name"
+         <*> o .: "owner"
+         <*> o .:? "public"
+         <*> o .: "snapshot_id"
+         <*> o .: "tracks"
+         <*> o .: "type"
+         <*> o .: "uri"
+
+data PlaylistTracks = PlaylistTracks {
+  playlisttracks_items :: [PlaylistTrack]
+} deriving (Show)
+
+instance FromJSON PlaylistTracks where
+  parseJSON = withObject "playlisttracks" $ \o ->
+    PlaylistTracks <$> o .: "items"
+
 data MultipleAudioFeatures = MultipleAudioFeatures {
   audio_features :: [AudioFeatures]
 } deriving (Show)

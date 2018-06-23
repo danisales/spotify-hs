@@ -187,3 +187,33 @@ getAvailableGenreSeeds = do
                       & header "Authorization" .~ ["Bearer " <> B.pack token]
   r <- getWith opts (baseUrl <> "/recommendations/available-genre-seeds")
   return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe Genres)
+
+-- e.g. getPlaylist "spotify" "37i9dQZF1DXbMYUPb05hjJ"
+getPlaylist :: String -> String -> IO (Maybe Playlist)
+getPlaylist user playlist = do
+  token <- getAccessToken
+  let opts = defaults & param "Accept" .~ ["application/json"]
+                      & param "Content-Type" .~["application/json"]
+                      & header "Authorization" .~ ["Bearer " <> B.pack token]
+  r <- getWith opts (baseUrl <> "/users/" <> user <> "/playlists/" <> playlist)
+  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe Playlist)
+
+-- e.g. getPlaylistTracks "spotify" "37i9dQZF1DXbMYUPb05hjJ"
+getPlaylistTracks :: String -> String -> IO (Maybe PlaylistTracks)
+getPlaylistTracks user playlist = do
+  token <- getAccessToken
+  let opts = defaults & param "Accept" .~ ["application/json"]
+                      & param "Content-Type" .~["application/json"]
+                      & header "Authorization" .~ ["Bearer " <> B.pack token]
+  r <- getWith opts (baseUrl <> "/users/" <> user <> "/playlists/" <> playlist <> "/tracks")
+  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe PlaylistTracks)
+
+-- e.g. getPlaylistCoverImg "spotify" "37i9dQZF1DXbMYUPb05hjJ"
+getPlaylistCoverImg :: String -> String -> IO (Maybe [Image])
+getPlaylistCoverImg user playlist = do
+  token <- getAccessToken
+  let opts = defaults & param "Accept" .~ ["application/json"]
+                      & param "Content-Type" .~["application/json"]
+                      & header "Authorization" .~ ["Bearer " <> B.pack token]
+  r <- getWith opts (baseUrl <> "/users/" <> user <> "/playlists/" <> playlist <> "/images")
+  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe [Image])
