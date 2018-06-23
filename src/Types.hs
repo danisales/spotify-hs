@@ -315,6 +315,28 @@ instance FromJSON AudioFeatures where
           <*> o .: "uri"
           <*> o .: "valence"
 
+data User = User {
+  user_diplay_name :: String,
+  user_external_urls :: (Map String String),
+  user_followers :: Followers,
+  user_href :: String,
+  user_id :: String,
+  user_images :: [Image],
+  user_type :: String,
+  user_uri :: String
+} deriving (Show)
+
+instance FromJSON User where
+  parseJSON = withObject "user" $ \o ->
+    User <$> o .: "display_name"
+         <*> o .: "external_urls"
+         <*> o .: "followers"
+         <*> o .: "href"
+         <*> o .: "id"
+         <*> o .: "images"
+         <*> o .: "type"
+         <*> o .: "uri"
+
 data MultipleAudioFeatures = MultipleAudioFeatures {
   audio_features :: [AudioFeatures]
 } deriving (Show)

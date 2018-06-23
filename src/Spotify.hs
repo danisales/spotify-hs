@@ -136,3 +136,13 @@ getAlbumTracks id = do
                       & header "Authorization" .~ ["Bearer " <> B.pack token]
   r <- getWith opts (baseUrl <> "/albums/" <> id <> "/tracks?limit=50")
   return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe AlbumTracks)
+
+-- e.g. getUser "spotify"
+getUser :: String -> IO (Maybe User)
+getUser id = do
+  token <- getAccessToken
+  let opts = defaults & param "Accept" .~ ["application/json"]
+                      & param "Content-Type" .~["application/json"]
+                      & header "Authorization" .~ ["Bearer " <> B.pack token]
+  r <- getWith opts (baseUrl <> "/users/" <> id)
+  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe User)
