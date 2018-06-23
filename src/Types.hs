@@ -337,6 +337,30 @@ instance FromJSON User where
          <*> o .: "type"
          <*> o .: "uri"
 
+data Category = Category {
+  category_href :: String,
+  category_icons :: [Image],
+  category_id :: String,
+  category_name :: String
+} deriving (Show)
+
+instance FromJSON Category where
+  parseJSON = withObject "category" $ \o ->
+    Category <$> o .: "href"
+         <*> o .: "icons"
+         <*> o .: "id"
+         <*> o .: "name"
+
+data Categories = Categories {
+  categories :: [Category]
+} deriving (Show)
+
+instance FromJSON Categories where
+  parseJSON = withObject "categories" $ \o -> do
+    categories <- o .: "categories"
+    items <- categories .: "items"
+    return $ Categories(items)
+
 data MultipleAudioFeatures = MultipleAudioFeatures {
   audio_features :: [AudioFeatures]
 } deriving (Show)

@@ -13,6 +13,7 @@ import Data.ByteString.Lazy.Internal
 import Data.List
 import Secret
 import Types
+import Data.Map (Map)
 
 baseUrl :: String
 baseUrl = "https://api.spotify.com/v1"
@@ -146,3 +147,23 @@ getUser id = do
                       & header "Authorization" .~ ["Bearer " <> B.pack token]
   r <- getWith opts (baseUrl <> "/users/" <> id)
   return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe User)
+
+-- e.g. getCategory "indie_alt"
+getCategory :: String -> IO (Maybe Category)
+getCategory id = do
+  token <- getAccessToken
+  let opts = defaults & param "Accept" .~ ["application/json"]
+                      & param "Content-Type" .~["application/json"]
+                      & header "Authorization" .~ ["Bearer " <> B.pack token]
+  r <- getWith opts (baseUrl <> "/browse/categories/" <> id)
+  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe Category)
+
+-- e.g. getListCategories
+getListCategories :: IO (Maybe Categories)
+getListCategories = do
+  token <- getAccessToken
+  let opts = defaults & param "Accept" .~ ["application/json"]
+                      & param "Content-Type" .~["application/json"]
+                      & header "Authorization" .~ ["Bearer " <> B.pack token]
+  r <- getWith opts (baseUrl <> "/browse/categories?limit=50")
+  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe Categories)
