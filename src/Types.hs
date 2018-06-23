@@ -179,7 +179,7 @@ data SimplifiedAlbum = SimplifiedAlbum {
 
 instance FromJSON SimplifiedAlbum where
   parseJSON = withObject "simplifiedalbum" $ \o ->
-    SimplifiedAlbum <$> o .:?: "album_group"
+    SimplifiedAlbum <$> o .:? "album_group"
           <*> o .: "album_type"
           <*> o .: "artists"
           <*> o .: "available_markets"
@@ -197,3 +197,53 @@ instance FromJSON SimplifiedAlbum where
 data SimplifiedAlbums = SimplifiedAlbums {
   s_albums :: [SimplifiedAlbum]
 } deriving (Show)
+
+data AudioFeatures = AudioFeatures {
+  af_acousticness :: Double,
+  af_analysis_url :: String,
+  af_danceability :: Double,
+  af_duration_ms :: Integer,
+  af_energy :: Double,
+  af_id :: String,
+  af_instrumentalness :: Double,
+  af_key :: Integer,
+  af_liveness :: Double,
+  af_loudness :: Double,
+  af_mode :: Integer,
+  af_speechiness :: Double,
+  af_tempo :: Double,
+  af_time_signature :: Integer,
+  af_track_href :: String,
+  af_type :: String,
+  af_uri :: String,
+  af_valence :: Double
+} deriving (Show)
+
+instance FromJSON AudioFeatures where
+  parseJSON = withObject "audiofeatures" $ \o ->
+    AudioFeatures <$> o .: "acousticness"
+          <*> o .: "analysis_url"
+          <*> o .: "danceability"
+          <*> o .: "duration_ms"
+          <*> o .: "energy"
+          <*> o .: "id"
+          <*> o .: "instrumentalness"
+          <*> o .: "key"
+          <*> o .: "liveness"
+          <*> o .: "loudness"
+          <*> o .: "mode"
+          <*> o .: "speechiness"
+          <*> o .: "tempo"
+          <*> o .: "time_signature"
+          <*> o .: "track_href"
+          <*> o .: "type"
+          <*> o .: "uri"
+          <*> o .: "valence"
+
+data MultipleAudioFeatures = MultipleAudioFeatures {
+  audio_features :: [AudioFeatures]
+} deriving (Show)
+
+instance FromJSON MultipleAudioFeatures where
+  parseJSON = withObject "multaudiofeatures" $ \o ->
+    MultipleAudioFeatures <$> o .: "audio_features"

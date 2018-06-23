@@ -77,3 +77,22 @@ getTracks ids = do
   r <- getWith opts (baseUrl <> "/tracks?ids=" <> intercalate "," ids)
   return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe Tracks)
 
+-- e.g. getAudioFeatures "0WQiDwKJclirSYG9v5tayI"
+getAudioFeatures :: String -> IO (Maybe AudioFeatures)
+getAudioFeatures id = do
+  token <- getAccessToken
+  let opts = defaults & param "Accept" .~ ["application/json"]
+                      & param "Content-Type" .~["application/json"]
+                      & header "Authorization" .~ ["Bearer " <> B.pack token]
+  r <- getWith opts (baseUrl <> "/audio-features/" <> id)
+  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe AudioFeatures)
+
+  -- e.g. getMultipleAudioFeatures ["2hopb3OJKYhhZ6L4ca9pBp", "3SVAN3BRByDmHOhKyIDxfC", "0WQiDwKJclirSYG9v5tayI"]
+getMultipleAudioFeatures :: [String] -> IO (Maybe MultipleAudioFeatures)
+getMultipleAudioFeatures ids = do
+  token <- getAccessToken
+  let opts = defaults & param "Accept" .~ ["application/json"]
+                      & param "Content-Type" .~["application/json"]
+                      & header "Authorization" .~ ["Bearer " <> B.pack token]
+  r <- getWith opts (baseUrl <> "/audio-features/?ids=" <> intercalate "," ids)
+  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe MultipleAudioFeatures)
