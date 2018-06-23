@@ -14,6 +14,9 @@ import Data.List
 import Secret
 import Types
 
+baseUrl :: String
+baseUrl = "https://api.spotify.com/v1"
+
 -- e.g. getArtist "6yz8H2Aks1bHaKNiHCutaR"
 getArtist :: String -> IO (Maybe Artist)
 getArtist id = do
@@ -21,7 +24,7 @@ getArtist id = do
   let opts = defaults & param "Accept" .~ ["application/json"]
                       & param "Content-Type" .~["application/json"]
                       & header "Authorization" .~ ["Bearer " <> B.pack token]
-  r <- getWith opts ("https://api.spotify.com/v1/artists/" <> id)
+  r <- getWith opts (baseUrl <> "/artists/" <> id)
   return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe Artist)
 
 -- e.g. getArtists ["6yz8H2Aks1bHaKNiHCutaR", "4ERtgeBbWRkFzIz6LaFCeY", "3yY2gUcIsjMr8hjo51PoJ8"]
@@ -31,5 +34,46 @@ getArtists ids = do
   let opts = defaults & param "Accept" .~ ["application/json"]
                       & param "Content-Type" .~["application/json"]
                       & header "Authorization" .~ ["Bearer " <> B.pack token]
-  r <- getWith opts ("https://api.spotify.com/v1/artists?ids=" <> intercalate "," ids)
+  r <- getWith opts (baseUrl <> "/artists?ids=" <> intercalate "," ids)
   return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe Artists)
+
+-- e.g. getRelatedArtists "6yz8H2Aks1bHaKNiHCutaR"
+getRelatedArtists :: String -> IO (Maybe Artists)
+getRelatedArtists id = do
+  token <- getAccessToken
+  let opts = defaults & param "Accept" .~ ["application/json"]
+                      & param "Content-Type" .~["application/json"]
+                      & header "Authorization" .~ ["Bearer " <> B.pack token]
+  r <- getWith opts (baseUrl <> "/artists/" <> id <> "/related-artists")
+  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe Artists)
+
+-- e.g. getTopTracks "6yz8H2Aks1bHaKNiHCutaR" "BR"
+getTopTracks :: String -> String -> IO (Maybe Tracks)
+getTopTracks id country = do
+  token <- getAccessToken
+  let opts = defaults & param "Accept" .~ ["application/json"]
+                      & param "Content-Type" .~["application/json"]
+                      & header "Authorization" .~ ["Bearer " <> B.pack token]
+  r <- getWith opts (baseUrl <> "/artists/" <> id <> "/top-tracks?country=" <> country)
+  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe Tracks)
+
+-- e.g. getTrack "0WQiDwKJclirSYG9v5tayI"
+getTrack :: String -> IO (Maybe Track)
+getTrack id = do
+  token <- getAccessToken
+  let opts = defaults & param "Accept" .~ ["application/json"]
+                      & param "Content-Type" .~["application/json"]
+                      & header "Authorization" .~ ["Bearer " <> B.pack token]
+  r <- getWith opts (baseUrl <> "/tracks/" <> id)
+  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe Track)
+
+-- e.g. getTracks ["2hopb3OJKYhhZ6L4ca9pBp", "3SVAN3BRByDmHOhKyIDxfC", "0WQiDwKJclirSYG9v5tayI"]
+getTracks :: [String] -> IO (Maybe Tracks)
+getTracks ids = do
+  token <- getAccessToken
+  let opts = defaults & param "Accept" .~ ["application/json"]
+                      & param "Content-Type" .~["application/json"]
+                      & header "Authorization" .~ ["Bearer " <> B.pack token]
+  r <- getWith opts (baseUrl <> "/tracks?ids=" <> intercalate "," ids)
+  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe Tracks)
+
