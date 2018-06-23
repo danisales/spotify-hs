@@ -435,6 +435,64 @@ instance FromJSON Playlist where
          <*> o .: "type"
          <*> o .: "uri"
 
+data SimplifiedPlaylist = SimplifiedPlaylist {
+  s_playlist_collaborative :: Bool,
+  s_playlist_external_urls :: (Map String String),
+  s_playlist_href :: String,
+  s_playlist_id :: String,
+  s_playlist_images :: Maybe [Image],
+  s_playlist_name :: String,
+  s_playlist_owner :: SimplifiedUser,
+  s_playlist_public :: Maybe Bool,
+  s_playlist_snapshot_id :: String,
+  s_playlist_tracks :: TrackLink,
+  s_playlist_type :: String,
+  s_playlist_uri :: String 
+} deriving (Show)
+
+instance FromJSON SimplifiedPlaylist where
+  parseJSON = withObject "user" $ \o ->
+    SimplifiedPlaylist <$> o .: "collaborative"
+         <*> o .: "external_urls"
+         <*> o .: "href"
+         <*> o .: "id"
+         <*> o .:? "images"
+         <*> o .: "name"
+         <*> o .: "owner"
+         <*> o .:? "public"
+         <*> o .: "snapshot_id"
+         <*> o .: "tracks"
+         <*> o .: "type"
+         <*> o .: "uri"
+
+data Playlists = Playlists {
+  playlists :: [SimplifiedPlaylist]
+} deriving (Show)
+
+instance FromJSON Playlists where
+  parseJSON = withObject "playlists" $ \o -> do
+    playlists <- o .: "playlists"
+    items <- playlists .: "items"
+    return $ Playlists(items)
+
+data UserPlaylists = UserPlaylists {
+  userplaylists :: [SimplifiedPlaylist]
+} deriving (Show)
+
+instance FromJSON UserPlaylists where
+  parseJSON = withObject "playlists" $ \o -> do
+    UserPlaylists <$> o .: "items"
+
+data TrackLink = TrackLink {
+  href :: String,
+  total :: Integer
+} deriving (Show)
+
+instance FromJSON TrackLink where
+  parseJSON = withObject "playlists" $ \o -> do
+    TrackLink <$> o .: "href"
+         <*> o .: "total"
+
 data PlaylistTracks = PlaylistTracks {
   playlisttracks_items :: [PlaylistTrack]
 } deriving (Show)

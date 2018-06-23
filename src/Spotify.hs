@@ -105,7 +105,7 @@ getMultipleAudioFeatures ids = do
   let opts = defaults & param "Accept" .~ ["application/json"]
                       & param "Content-Type" .~["application/json"]
                       & header "Authorization" .~ ["Bearer " <> B.pack token]
-  r <- getWith opts (baseUrl <> "/audio-features/?ids=" <> intercalate "," ids)
+  r <- getWith opts (baseUrl <> "/audio-features?ids=" <> intercalate "," ids)
   return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe MultipleAudioFeatures)
 
 -- e.g. getAlbum "2AwtTIdUFaUl69alioeFut"
@@ -148,6 +148,16 @@ getUser id = do
   r <- getWith opts (baseUrl <> "/users/" <> id)
   return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe User)
 
+-- e.g. getUserPlaylists "spotify"
+getUserPlaylists :: String -> IO (Maybe UserPlaylists)
+getUserPlaylists id = do
+  token <- getAccessToken
+  let opts = defaults & param "Accept" .~ ["application/json"]
+                      & param "Content-Type" .~["application/json"]
+                      & header "Authorization" .~ ["Bearer " <> B.pack token]
+  r <- getWith opts (baseUrl <> "/users/" <> id <> "/playlists?limit=50")
+  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe UserPlaylists)
+
 -- e.g. getCategory "indie_alt"
 getCategory :: String -> IO (Maybe Category)
 getCategory id = do
@@ -157,6 +167,26 @@ getCategory id = do
                       & header "Authorization" .~ ["Bearer " <> B.pack token]
   r <- getWith opts (baseUrl <> "/browse/categories/" <> id)
   return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe Category)
+
+-- e.g. getCategoryPlaylists "indie_alt"
+getCategoryPlaylists :: String -> IO (Maybe Playlists)
+getCategoryPlaylists id = do
+  token <- getAccessToken
+  let opts = defaults & param "Accept" .~ ["application/json"]
+                      & param "Content-Type" .~["application/json"]
+                      & header "Authorization" .~ ["Bearer " <> B.pack token]
+  r <- getWith opts (baseUrl <> "/browse/categories/" <> id <> "/playlists?limit=50")
+  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe Playlists)
+
+-- e.g. getFeaturedPlaylists
+getFeaturedPlaylists :: IO (Maybe Playlists)
+getFeaturedPlaylists = do
+  token <- getAccessToken
+  let opts = defaults & param "Accept" .~ ["application/json"]
+                      & param "Content-Type" .~["application/json"]
+                      & header "Authorization" .~ ["Bearer " <> B.pack token]
+  r <- getWith opts (baseUrl <> "/browse/featured-playlists?limit=50")
+  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe Playlists)
 
 -- e.g. getListCategories
 getListCategories :: IO (Maybe Categories)
