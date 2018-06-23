@@ -130,6 +130,44 @@ instance FromJSON Tracks where
   parseJSON = withObject "tracks" $ \o ->
     Tracks <$> o .: "tracks"
 
+data SimplifiedTracks = SimplifiedTracks {
+  s_track_simplified_artists :: [SimplifiedArtist],
+  s_track_available_markets :: [String],
+  s_track_disc_number :: Integer,
+  s_track_duration_ms :: Integer,
+  s_track_explict :: Bool,
+  s_track_external_urls :: ExternalURL,
+  s_track_href :: String,
+  s_track_id :: String,
+  s_track_is_playable :: Maybe Bool,
+  s_track_linked_from :: Maybe String,
+  s_track_restriction :: Maybe Restriction,
+  s_track_name :: String,
+  s_track_preview_url :: Maybe String,
+  s_track_number :: Integer,
+  s_track_type :: String,
+  s_track_uri :: String
+} deriving (Show)
+
+instance FromJSON SimplifiedTracks where
+  parseJSON = withObject "simplifiedtracks" $ \o ->
+    SimplifiedTracks <$> o .: "artists"
+          <*> o .: "available_markets"          
+          <*> o .: "disc_number"
+          <*> o .: "duration_ms"
+          <*> o .: "explicit"
+          <*> o .: "external_urls"
+          <*> o .: "href"
+          <*> o .: "id"
+          <*> o .:? "is_playable"
+          <*> o .:? "linked_from"
+          <*> o .:? "restrictions"
+          <*> o .: "name"
+          <*> o .:? "preview_url"
+          <*> o .: "track_number"
+          <*> o .: "type"
+          <*> o .: "uri"
+          
 data Restriction = Restriction {
   reason :: String
 } deriving (Show)
@@ -253,5 +291,13 @@ data ArtistAlbums = ArtistAlbums {
 } deriving (Show)
 
 instance FromJSON ArtistAlbums where
-  parseJSON = withObject "multaudiofeatures" $ \o ->
+  parseJSON = withObject "artistalbums" $ \o ->
     ArtistAlbums <$> o .: "items"
+
+data AlbumTracks = AlbumTracks {
+  at_tracks :: [SimplifiedTracks]
+} deriving (Show)
+
+instance FromJSON AlbumTracks where
+  parseJSON = withObject "albumtracks" $ \o ->
+    AlbumTracks <$> o .: "items"
