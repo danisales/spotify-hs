@@ -167,3 +167,23 @@ getListCategories = do
                       & header "Authorization" .~ ["Bearer " <> B.pack token]
   r <- getWith opts (baseUrl <> "/browse/categories?limit=50")
   return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe Categories)
+
+-- e.g. getNewReleases "BR"
+getNewReleases :: String -> IO (Maybe AlbumsNewReleases)
+getNewReleases country = do
+  token <- getAccessToken
+  let opts = defaults & param "Accept" .~ ["application/json"]
+                      & param "Content-Type" .~["application/json"]
+                      & header "Authorization" .~ ["Bearer " <> B.pack token]
+  r <- getWith opts (baseUrl <> "/browse/new-releases?country=" <> country)
+  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe AlbumsNewReleases)
+
+-- e.g. getAvailableGenreSeeds
+getAvailableGenreSeeds :: IO (Maybe Genres)
+getAvailableGenreSeeds = do
+  token <- getAccessToken
+  let opts = defaults & param "Accept" .~ ["application/json"]
+                      & param "Content-Type" .~["application/json"]
+                      & header "Authorization" .~ ["Bearer " <> B.pack token]
+  r <- getWith opts (baseUrl <> "/recommendations/available-genre-seeds")
+  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe Genres)

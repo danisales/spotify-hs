@@ -361,6 +361,16 @@ instance FromJSON Categories where
     items <- categories .: "items"
     return $ Categories(items)
 
+data AlbumsNewReleases = AlbumsNewReleases {
+  nr_albums :: [SimplifiedAlbum]
+} deriving (Show)
+
+instance FromJSON AlbumsNewReleases where
+  parseJSON = withObject "newreleases" $ \o -> do
+    albums <- o .: "albums"
+    items <- albums .: "items"
+    return $ AlbumsNewReleases(items)
+
 data MultipleAudioFeatures = MultipleAudioFeatures {
   audio_features :: [AudioFeatures]
 } deriving (Show)
@@ -384,3 +394,11 @@ data AlbumTracks = AlbumTracks {
 instance FromJSON AlbumTracks where
   parseJSON = withObject "albumtracks" $ \o ->
     AlbumTracks <$> o .: "items"
+
+data Genres = Genres {
+  genres :: [String]
+} deriving (Show)
+
+instance FromJSON Genres where
+  parseJSON = withObject "genres" $ \o ->
+    Genres <$> o .: "genres"
