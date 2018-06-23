@@ -217,6 +217,14 @@ instance FromJSON Album where
           <*> o .: "type"
           <*> o .: "uri"
 
+data Albums = Albums {
+  albums :: [Album]
+} deriving (Show)
+
+instance FromJSON Albums where
+  parseJSON = withObject "albums" $ \o ->
+    Albums <$> o .: "albums"
+
 data Copyright = Copyright {
   copyright_text :: String,
   copyright_type :: String
@@ -316,7 +324,7 @@ instance FromJSON MultipleAudioFeatures where
     MultipleAudioFeatures <$> o .: "audio_features"
 
 data ArtistAlbums = ArtistAlbums {
-  albums :: [SimplifiedAlbum]
+  artist_albums :: [SimplifiedAlbum]
 } deriving (Show)
 
 instance FromJSON ArtistAlbums where
