@@ -32,13 +32,6 @@ clientSecret = B.pack "SPOTIFY_CLIENT_SECRET"
 authToken :: B.ByteString
 authToken = B64.encode $ clientID <> ":" <> clientSecret
 
-getToken' = do
-  let opts = defaults
-             & header "Authorization" .~ ["Basic " <> authToken]
-  r <- postWith opts "https://accounts.spotify.com/api/token" ["grant_type" := ("client_credentials" :: String)]
-  return $ r ^? responseBody
-
-
 getToken :: IO (Maybe Token)
 getToken = do
   let opts = defaults
