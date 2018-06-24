@@ -383,7 +383,7 @@ instance FromJSON PlaylistTrack where
     PlaylistTrack <$> o .:? "added_at"
                   <*> o .:? "added_by"
                   <*> o .: "is_local"
-                 <*> o .: "track"
+                  <*> o .: "track"
 
 data SimplifiedUser = SimplifiedUser {
   s_user_external_urls :: (Map String String),
