@@ -6,11 +6,11 @@ import Data.Maybe
 idSimpleAlbum :: SimplifiedAlbum -> String
 idSimpleAlbum (SimplifiedAlbum _ _ _ _ _ _ id _ _ _ _ _ _ _) = id
 
-firstTrack :: Album -> SimplifiedTracks
+firstTrack :: Album -> SimplifiedTrack
 firstTrack (Album _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ t _ _) = head (fromJust (fromAlbumTracks (Just t)))
 
-trackId :: SimplifiedTracks -> String
-trackId (SimplifiedTracks _ _ _ _ _ _ _ id _ _ _ _ _ _ _ _) = id
+trackId :: SimplifiedTrack -> String
+trackId (SimplifiedTrack _ _ _ _ _ _ _ id _ _ _ _ _ _ _ _) = id
 
 main :: IO ()
 main = do

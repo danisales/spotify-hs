@@ -115,7 +115,7 @@ instance FromJSON Tracks where
   parseJSON = withObject "tracks" $ \o ->
     Tracks <$> o .: "tracks"
 
-data SimplifiedTracks = SimplifiedTracks {
+data SimplifiedTrack = SimplifiedTrack {
   s_track_simplified_artists :: [SimplifiedArtist],
   s_track_available_markets :: [String],
   s_track_disc_number :: Integer,
@@ -134,9 +134,9 @@ data SimplifiedTracks = SimplifiedTracks {
   s_track_uri :: String
 } deriving (Show)
 
-instance FromJSON SimplifiedTracks where
-  parseJSON = withObject "simplifiedtracks" $ \o ->
-    SimplifiedTracks <$> o .: "artists"
+instance FromJSON SimplifiedTrack where
+  parseJSON = withObject "simplifiedtrack" $ \o ->
+    SimplifiedTrack <$> o .: "artists"
           <*> o .: "available_markets"          
           <*> o .: "disc_number"
           <*> o .: "duration_ms"
@@ -518,7 +518,7 @@ instance FromJSON ArtistAlbums where
     ArtistAlbums <$> o .: "items"
 
 data AlbumTracks = AlbumTracks {
-  at_tracks :: [SimplifiedTracks]
+  at_tracks :: [SimplifiedTrack]
 } deriving (Show)
 
 instance FromJSON AlbumTracks where

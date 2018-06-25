@@ -23,7 +23,7 @@ fromAlbums :: Maybe Albums -> Maybe [Album]
 fromAlbums Nothing = Nothing
 fromAlbums (Just (Albums a)) = Just a
 
-fromAlbumTracks :: Maybe AlbumTracks -> Maybe [SimplifiedTracks]
+fromAlbumTracks :: Maybe AlbumTracks -> Maybe [SimplifiedTrack]
 fromAlbumTracks Nothing = Nothing
 fromAlbumTracks (Just (AlbumTracks a)) = Just a
 

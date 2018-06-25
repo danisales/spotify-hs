@@ -130,7 +130,7 @@ getAlbums ids = do
   return $ fromAlbums (A.decode (fromJust $ r ^? responseBody) :: Maybe Albums)
 
 -- e.g. getAlbumTracks "2AwtTIdUFaUl69alioeFut"
-getAlbumTracks :: String -> IO (Maybe [SimplifiedTracks])
+getAlbumTracks :: String -> IO (Maybe [SimplifiedTrack])
 getAlbumTracks id = do
   token <- getAccessToken
   let opts = defaults & param "Accept" .~ ["application/json"]
