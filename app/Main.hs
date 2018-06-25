@@ -1,6 +1,10 @@
 module Main where
 
-import Lib
+import Spotify
+import Data.Maybe
 
 main :: IO ()
-main = someFunc
+main = do
+  a <- getArtist "6yz8H2Aks1bHaKNiHCutaR"
+  print $ fromJust a
+  return ()
