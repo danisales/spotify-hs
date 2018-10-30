@@ -1,24 +1,28 @@
+{-# LANGUAGE NamedFieldPuns #-}
+
+module AudioFeatures where
+
 import Spotify
 import Types
 import ConvertTypes
 import Data.Maybe
 
 idSimpleAlbum :: SimplifiedAlbum -> String
-idSimpleAlbum (SimplifiedAlbum _ _ _ _ _ _ id _ _ _ _ _ _ _) = id
+idSimpleAlbum SimplifiedAlbum {s_album_id} = s_album_id
 
 firstTrack :: Album -> SimplifiedTrack
-firstTrack (Album _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ t _ _) = head (fromJust (fromAlbumTracks (Just t)))
+firstTrack Album{album_tracks} = head (fromJust (fromAlbumTracks (Just album_tracks)))
 
 albumTracks :: Album -> [SimplifiedTrack]
-albumTracks (Album _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ t _ _) = fromJust (fromAlbumTracks (Just t))
+albumTracks Album{album_tracks} = fromJust (fromAlbumTracks (Just album_tracks))
 
 trackId :: SimplifiedTrack -> String
-trackId (SimplifiedTrack _ _ _ _ _ _ _ id _ _ _ _ _ _ _ _) = id
+trackId SimplifiedTrack{s_track_id} = s_track_id
 
 main :: IO ()
 main = do
   let artistId = "3yY2gUcIsjMr8hjo51PoJ8"
-  
+
   artist <- getArtist artistId
   print $ "Artist"
   print $ artist
@@ -31,10 +35,10 @@ main = do
 
   let fstTrack = trackId (firstTrack (fromJust album))
   audioFeatures <- getAudioFeatures fstTrack
-  
+
   print $ "Audio Features"
   print $ (fromJust audioFeatures)
-  
+
   print $  "Track ids"
   let tracks = map trackId (albumTracks (fromJust album))
   print $ tracks
@@ -42,5 +46,5 @@ main = do
   print $  "Multiple Audio Features"
   multFeatures <- getMultipleAudioFeatures tracks
   print $ multFeatures
-  
+
   return ()

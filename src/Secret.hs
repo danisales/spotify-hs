@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE NamedFieldPuns #-}
 
 module Secret where
 
@@ -30,17 +31,17 @@ instance FromJSON Token where
 -- export SPOTIFY_CLIENT_ID="YOUR CLIENT ID"
 -- export SPOTIFY_CLIENT_SECRET="YOUR CLIENT SECRET"
 
-clientID :: IO (B.ByteString)
+clientID :: IO B.ByteString
 clientID = do
   id <- getEnv "SPOTIFY_CLIENT_ID"
   return $ B.pack id
 
-clientSecret :: IO (B.ByteString)
+clientSecret :: IO B.ByteString
 clientSecret = do
   secret <- getEnv "SPOTIFY_CLIENT_SECRET"
   return $ B.pack secret
 
-authToken :: IO (B.ByteString)
+authToken :: IO B.ByteString
 authToken = do
   id <- clientID
   secret <- clientSecret
@@ -52,11 +53,11 @@ getToken = do
   let opts = defaults
              & header "Authorization" .~ ["Basic " <> token]
   r <- postWith opts "https://accounts.spotify.com/api/token" ["grant_type" := ("client_credentials" :: String)]
-  return $ (A.decode (fromJust $ r ^? responseBody) :: Maybe Token)
+  return $ (A.decode (r ^?! responseBody) :: Maybe Token)
 
 getAccessToken :: IO String
 getAccessToken = do
   token <- getToken
   return $ (extractToken $ fromJust token)
     where
-      extractToken (Token a _ _ _) = a
+      extractToken Token{access_token} = access_token
