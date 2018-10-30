@@ -137,7 +137,7 @@ data SimplifiedTrack = SimplifiedTrack {
 instance FromJSON SimplifiedTrack where
   parseJSON = withObject "simplifiedtrack" $ \o ->
     SimplifiedTrack <$> o .: "artists"
-          <*> o .: "available_markets"          
+          <*> o .: "available_markets"
           <*> o .: "disc_number"
           <*> o .: "duration_ms"
           <*> o .: "explicit"
@@ -201,7 +201,7 @@ instance FromJSON Album where
     Album <$> o .: "album_type"
           <*> o .: "artists"
           <*> o .: "available_markets"
-          <*> o .: "copyrights"     
+          <*> o .: "copyrights"
           <*> o .: "external_ids"
           <*> o .: "external_urls"
           <*> o .: "genres"
@@ -359,7 +359,7 @@ instance FromJSON Categories where
   parseJSON = withObject "categories" $ \o -> do
     categories <- o .: "categories"
     items <- categories .: "items"
-    return $ Categories(items)
+    return $ Categories items
 
 data AlbumsNewReleases = AlbumsNewReleases {
   nr_albums :: [SimplifiedAlbum]
@@ -369,7 +369,7 @@ instance FromJSON AlbumsNewReleases where
   parseJSON = withObject "newreleases" $ \o -> do
     albums <- o .: "albums"
     items <- albums .: "items"
-    return $ AlbumsNewReleases(items)
+    return $ AlbumsNewReleases items
 
 data PlaylistTrack = PlaylistTrack {
   playlisttrack_added_at :: Maybe String,
@@ -447,7 +447,7 @@ data SimplifiedPlaylist = SimplifiedPlaylist {
   s_playlist_snapshot_id :: String,
   s_playlist_tracks :: TrackLink,
   s_playlist_type :: String,
-  s_playlist_uri :: String 
+  s_playlist_uri :: String
 } deriving (Show)
 
 instance FromJSON SimplifiedPlaylist where
@@ -473,14 +473,14 @@ instance FromJSON Playlists where
   parseJSON = withObject "playlists" $ \o -> do
     playlists <- o .: "playlists"
     items <- playlists .: "items"
-    return $ Playlists(items)
+    return $ Playlists items
 
 data UserPlaylists = UserPlaylists {
   userplaylists :: [SimplifiedPlaylist]
 } deriving (Show)
 
 instance FromJSON UserPlaylists where
-  parseJSON = withObject "playlists" $ \o -> do
+  parseJSON = withObject "playlists" $ \o ->
     UserPlaylists <$> o .: "items"
 
 data TrackLink = TrackLink {
@@ -489,7 +489,7 @@ data TrackLink = TrackLink {
 } deriving (Show)
 
 instance FromJSON TrackLink where
-  parseJSON = withObject "playlists" $ \o -> do
+  parseJSON = withObject "playlists" $ \o ->
     TrackLink <$> o .: "href"
          <*> o .: "total"
 
